@@ -18,25 +18,6 @@ class EzpzViewEzpz extends JViewLegacy
 
     function display($tpl = null)
     {
-        $input = JFactory::getApplication()->input;
-        $mapbounds = $input->get('mapBounds', array(), 'ARRAY');
-        $model = $this->getModel();
-        if ($mapbounds)
-        {
-            $records = $model->getMapSearchResults($mapbounds);
-            if ($records)
-            {
-                echo new JResponseJson($records);
-            }
-            else
-            {
-                echo new JResponseJson(null, JText::_('COM_EZPZ_ERROR_NO_RECORDS'), true);
-            }
-        }
-        else
-        {
-            $records = array();
-            echo new JResponseJson(null, JText::_('COM_EZPZ_ERROR_NO_MAP_BOUNDS'), true);
-        }
+        echo new \Joomla\CMS\Response\JsonResponse(['TODO']);
     }
 }
