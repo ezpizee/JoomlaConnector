@@ -71,14 +71,15 @@ class EzpzViewInstall extends HtmlView
         parent::display($tpl);
     }
 
-    protected function getFormData(string $key, $default) {
+    protected function getFormData(string $key, $default=null) {
         return isset($this->formData[$key]) ? $this->formData[$key] : $default;
     }
 
     private function install(): void {
 
         $app = Factory::getApplication();
-        $response = Client::install(Client::DEFAULT_ACCESS_TOKEN_KEY, $this->formData);
+        $tokenHandler = 'EzpizeeJoomla\TokenHandler';
+        $response = Client::install(Client::DEFAULT_ACCESS_TOKEN_KEY, $this->formData, $tokenHandler);
 
         if (!empty($response)) {
             if (isset($response['code']) && (int)$response['code'] !== 200) {

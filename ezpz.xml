@@ -49,6 +49,7 @@
     </languages>
 
     <administration>
+        <menu link='index.php?option=com_ezpz' img="/adminstrator/components/com_ezpz/asset/images/icon.png">COM_EZPZ_MENU</menu>
         <!-- Note the folder attribute: This attribute describes the folder
             to copy FROM in the package to install therefore files copied
             in this section are copied from /admin/ in the package -->
