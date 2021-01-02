@@ -65,6 +65,6 @@ class EzpzViewEzpz extends HtmlView
         }
         $dir = EzpzAdminHelper::assetFileRoot().DIRECTORY_SEPARATOR.'data'.DIRECTORY_SEPARATOR;
         $override = str_replace($patterns, $replaces, file_get_contents($dir . 'ezpz_'.$this->mode.'_override.js'));
-        echo str_replace('<' . 'head>', '<' . 'head' . '><' . 'script>' . $override . '</' . 'script>', $this->portalContent);
+        $this->portalContent = str_replace('<' . 'head>', '<' . 'head' . '><' . 'script>' . $override . '</' . 'script>', $this->portalContent);
     }
 }
