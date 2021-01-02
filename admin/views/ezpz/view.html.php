@@ -12,17 +12,18 @@ defined('_JEXEC') or die('Restricted access');
 
 use Ezpizee\ConnectorUtils\Client;
 use Joomla\CMS\Factory;
+use Joomla\CMS\MVC\View\HtmlView;
 
 /**
  * Ezpz View
  *
  * @since  0.0.1
  */
-class EzpzViewEzpz extends JViewLegacy
+class EzpzViewEzpz extends HtmlView
 {
-    protected $ezpzConfig;
-    protected $portalContent = '';
-    protected $mode = 'install';
+    private $ezpzConfig;
+    private $mode = 'install';
+    private $portalContent = '';
 
     /**
      * @param null $tpl
@@ -36,12 +37,34 @@ class EzpzViewEzpz extends JViewLegacy
         if (!empty($this->ezpzConfig)) {
             $this->mode = 'admin';
             $env = $this->ezpzConfig['env'];
-            $this->portalContent = Client::getContentAsString(Client::cdnEndpointPfx($env).Client::adminUri('joomla'));
-            // Display the template
-            parent::display($tpl);
+            $url = Client::cdnEndpointPfx($env).Client::adminUri('joomla');
+            if ($env === 'local') {
+                Client::setIgnorePeerValidation(true);
+            }
+            $this->portalContent = Client::getContentAsString($url);
+            $this->formatOutput();
+            die($this->portalContent);
         }
         else {
             Factory::getApplication()->redirect('/administrator/index.php?option=com_ezpz&view=install');
         }
+    }
+
+    private function formatOutput(): void {
+        $patterns = ["\n", "\r", "\t", "\s+"];
+        $replaces = ["", "", "", " "];
+        if (!empty($this->ezpzConfig)) {
+            foreach ($this->ezpzConfig as $key=>$val) {
+                $patterns[] = '{'.$key.'}';
+                $replaces[] = $val;
+            }
+        }
+        if ($this->mode === 'admin') {
+            $patterns[] = '{loginPageRedirectUrl}';
+            $replaces[] = '/administrator';
+        }
+        $dir = EzpzAdminHelper::assetFileRoot().DIRECTORY_SEPARATOR.'data'.DIRECTORY_SEPARATOR;
+        $override = str_replace($patterns, $replaces, file_get_contents($dir . 'ezpz_'.$this->mode.'_override.js'));
+        echo str_replace('<' . 'head>', '<' . 'head' . '><' . 'script>' . $override . '</' . 'script>', $this->portalContent);
     }
 }

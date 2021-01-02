@@ -12,6 +12,8 @@ defined('_JEXEC') or die('Restricted access');
 
 use Ezpizee\ConnectorUtils\Client;
 use Joomla\CMS\Factory;
+use Joomla\CMS\Language\Text;
+use Joomla\CMS\MVC\View\HtmlView;
 use Joomla\CMS\Session\Session;
 
 /**
@@ -19,7 +21,7 @@ use Joomla\CMS\Session\Session;
  *
  * @since  0.0.1
  */
-class EzpzViewInstall extends JViewLegacy
+class EzpzViewInstall extends HtmlView
 {
     private $formData = [];
     private $values = [];
@@ -55,7 +57,7 @@ class EzpzViewInstall extends JViewLegacy
                 else {
                     $hasError = true;
                     $app->enqueueMessage(
-                        sprintf(JText::_('COM_EZPZ_REQUIRED_BUT_MISSING'), JText::_('COM_EZPZ_'.strtoupper($key))),
+                        sprintf(Text::_('COM_EZPZ_REQUIRED_BUT_MISSING'), Text::_('COM_EZPZ_'.strtoupper($key))),
                         'error'
                     );
                 }
@@ -81,7 +83,7 @@ class EzpzViewInstall extends JViewLegacy
         if (!empty($response)) {
             if (isset($response['code']) && (int)$response['code'] !== 200) {
                 if ($response['message']==='ITEM_ALREADY_EXISTS') {
-                    $app->enqueueMessage(JText::_('COM_EZPZ_INSTALL_ERROR_ALREADY_EXISTS'), 'error');
+                    $app->enqueueMessage(Text::_('COM_EZPZ_INSTALL_ERROR_ALREADY_EXISTS'), 'error');
                 }
                 else {
                     $app->enqueueMessage($response['message'], 'error');
@@ -95,7 +97,7 @@ class EzpzViewInstall extends JViewLegacy
             }
         }
         else {
-            $app->enqueueMessage(JText::_('COM_EZPZ_INSTALL_ERROR_FAILED_TO_INSTALL'));
+            $app->enqueueMessage(Text::_('COM_EZPZ_INSTALL_ERROR_FAILED_TO_INSTALL'));
         }
     }
 }

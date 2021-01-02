@@ -14,9 +14,13 @@ use Ezpizee\ConnectorUtils\Client;
 use Ezpizee\MicroservicesClient\Config;
 use Ezpizee\MicroservicesClient\Response;
 use Ezpizee\Utils\ListModel;
+use Ezpizee\Utils\Request;
+use Ezpizee\Utils\ResponseCodes;
 use Ezpizee\Utils\StringUtil;
+use EzpizeeJoomla\ContextProcessors\User\Profile\ContextProcessor;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Version;
+use Joomla\CMS\MVC\View\HtmlView;
 use Unirest\Request\Body;
 
 /**
@@ -24,9 +28,8 @@ use Unirest\Request\Body;
  *
  * @since  0.0.1
  */
-class EzpzViewApi extends JViewLegacy
+class EzpzViewApi extends HtmlView
 {
-    protected $portalData = '';
     /**
      * @var ListModel
      */
@@ -35,6 +38,9 @@ class EzpzViewApi extends JViewLegacy
      * @var Client
      */
     private $client;
+    /**
+     * @var Request
+     */
     private $request;
     private $method;
     private $contentType;
@@ -54,9 +60,10 @@ class EzpzViewApi extends JViewLegacy
             $app = Factory::getApplication();
             $this->ezpzConfig->set('endpoint', $app->input->getString('endpoint'));
             $this->prepare();
-            $this->portalData = json_encode($this->restApiClient());
-            // Display the template
-            parent::display($tpl);
+            $response = $this->restApiClient();
+            header('Content-Type: application/json');
+            http_response_code($response->getCode());
+            die($response);
         }
         else {
             Factory::getApplication()->redirect('/administrator/index.php?option=com_ezpz&view=install');
@@ -77,28 +84,26 @@ class EzpzViewApi extends JViewLegacy
                 Client::KEY_ENV => $env,
                 Client::KEY_ACCESS_TOKEN => Client::DEFAULT_ACCESS_TOKEN_KEY
             ]);
-            $this->request = Factory::getApplication()->input;
-            $this->client = new Client(Client::apiSchema($env), Client::apiHost($env), $microserviceConfig);
+            $this->request = new Request();
+            if ($env === 'local') {
+                Client::setIgnorePeerValidation(true);
+            }
+            $tokenHandler = 'EzpizeeJoomla\TokenHandler';
+            $this->client = new Client(Client::apiSchema($env), Client::apiHost($env), $microserviceConfig, $tokenHandler);
             $this->client->setPlatform('joomla');
             $this->client->setPlatformVersion(Version::MAJOR_VERSION.'.'.Version::MINOR_VERSION.'.'.Version::PATCH_VERSION);
             $this->addHeaderRequest('user_id', Factory::getUser()->id);
-            if ($env === 'local') {
-                $this->client->verifyPeer(false);
-            }
-            $this->uri = $this->request->getString('endpoint');
+            $this->uri = $this->request->getRequestParam('endpoint');
             if ($this->uri && $this->uri[0] !== '/') {
                 $this->uri = str_replace('//', '/', '/'.$this->uri);
             }
-            $this->method = $this->request->getMethod();
-            $this->contentType = $this->request->server->get('Content-Type');
-            $this->body = json_decode(!empty($this->request->serialize())?$this->request->serialize():'[]', true);
-            if (empty($this->body))  {
-                $this->body = [];
-            }
+            $this->method = $this->request->method();
+            $this->contentType = $this->request->contentType();
+            $this->body = !empty($this->request->getRequestParamsAsArray()) ? $this->request->getRequestParamsAsArray() : [];
         }
     }
 
-    public function restApiClient(): Response
+    protected function restApiClient(): Response
     {
         if (!empty($this->uri)) {
             if (StringUtil::startsWith($this->uri, "/api/v1/joomla/")) {
@@ -115,61 +120,77 @@ class EzpzViewApi extends JViewLegacy
 
     private function requestToCMS(): Response
     {
-        //$drupalApi = new EzpizeeAPIClientDrupalApiController($this->client);
-        //$res = $drupalApi->load($this->method, $this->uri);
-        return new Response(['code'=>200, 'message'=>'TODO: Context Processing', 'data'=>[]]);
+        $api = new \EzpizeeJoomla\ApiClient($this->client);
+        return new Response($api->load($this->uri));
     }
 
     private function requestToMicroServices(): Response
     {
+        $response = new Response([
+            'status'=>'ERROR',
+            'code'=>ResponseCodes::CODE_METHOD_NOT_ALLOWED,
+            'data'=>null,
+            'message'=>ResponseCodes::MESSAGE_ERROR_INVALID_METHOD
+        ]);
         if ($this->method === 'GET') {
-            return $this->client->get($this->uri);
+            $response = $this->client->get($this->uri);
+            $res = json_decode($response, true);
+            if (isset($res['data']) && isset($res['data']['created_by'])) {
+                $userProfileCP = new ContextProcessor();
+                $userProfileCP->setMicroServiceClient($this->client);
+                $userProfileCP->setRequest($this->request);
+                $userInfo = $userProfileCP->getUserInfoById((int)$res['data']['created_by']);
+                $res['data']['created_by'] = $userInfo;
+                $res['data']['modified_by'] = $userInfo;
+            }
         }
         else if ($this->method === 'POST') {
             if (isset($this->contentType) && $this->contentType === 'application/json') {
-                return $this->client->post($this->uri, $this->body);
+                $response = $this->client->post($this->uri, $this->body);
             }
             else if (isset($this->contentType) && strpos($this->contentType, 'multipart/form-data;') !== false) {
                 if ($this->hasFileUploaded()) {
-                    return $this->submitFormDataWithFile();
+                    $response = $this->submitFormDataWithFile();
                 }
                 else {
-                    return $this->submitFormData();
+                    $response = $this->submitFormData();
                 }
             }
             else {
-                return new Response(['code'=>422,'message'=>'Unprocessable data']);
+                $response->setCode(ResponseCodes::CODE_ERROR_INVALID_FIELD);
+                $response->setMessage('INVALID_CONTENT_TYPE');
             }
         }
         else if ($this->method === 'PUT') {
             if (isset($this->contentType) && $this->contentType === 'application/json') {
-                return $this->client->put($this->uri, $this->body);
+                $response = $this->client->put($this->uri, $this->body);
             }
             else {
-                return new Response(['code'=>422,'message'=>'Unprocessable data']);
+                $response->setCode(ResponseCodes::CODE_ERROR_INVALID_FIELD);
+                $response->setMessage('INVALID_CONTENT_TYPE');
             }
         }
         else if ($this->method === 'DELETE') {
-            return $this->client->delete($this->uri, $this->body);
+            $response = $this->client->delete($this->uri, $this->body);
         }
         else if ($this->method === 'PATCH') {
-            return $this->client->patch($this->uri, $this->body);
+            $response = $this->client->patch($this->uri, $this->body);
         }
-        else {
-            return new Response(['code'=>422,'message'=>'Unprocessable data']);
-        }
+        return $response;
     }
 
     private function submitFormDataWithFile(): Response
     {
         $fileUploaded = $this->uploadFile();
         $this->body[$fileUploaded['fileFieldName']] = Body::file($fileUploaded['filename'], $fileUploaded['mimetype'], $fileUploaded['postname']);
-        return $this->client->postFormData($this->uri, $this->body);
+        $response = $this->client->postFormData($this->uri, $this->body);
+        return $response;
     }
 
     private function submitFormData(): Response
     {
-        return $this->client->postFormData($this->uri, $this->body);
+        $response = $this->client->postFormData($this->uri, $this->body);
+        return $response;
     }
 
     private function hasFileUploaded(): bool
@@ -184,15 +205,17 @@ class EzpzViewApi extends JViewLegacy
 
     private function uploadFile(): array
     {
-        // TODO
-        $files = $this->request->files;
+        $files = $this->request->getFiles();
+        if (empty($files)) {
+            throw new RuntimeException('Invalid file', ResponseCodes::CODE_ERROR_INVALID_FIELD);
+        }
         $keys = array_keys($files);
         $fileFieldName = $keys[0];
         if (isset($_FILES) && !empty($_FILES) && !isset($_FILES[$fileFieldName])) {
-            throw new RuntimeException('File name not found', 400);
+            throw new RuntimeException('File name not found', ResponseCodes::CODE_ERROR_INVALID_FIELD);
         }
         if (isset($_FILES) && !empty($_FILES) && !isset($_FILES[$fileFieldName]) && $_FILES[$fileFieldName]['error'] > 0) {
-            throw new RuntimeException('File could not be processed', 400);
+            throw new RuntimeException('File could not be processed', ResponseCodes::CODE_ERROR_INVALID_FIELD);
         }
         return [
             'fileFieldName' => $fileFieldName,

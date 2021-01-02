@@ -24,6 +24,7 @@
   "require": {
     "ezpizee/utils": "dev-master",
     "ezpizee/microservices-client": "dev-master",
-    "ezpizee/connector-utils": "dev-master"
+    "ezpizee/connector-utils": "dev-master",
+    "ezpizee/contextprocessor": "dev-master"
   }
 }

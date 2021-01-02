@@ -10,6 +10,8 @@
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\CMS\MVC\Controller\BaseController;
+
 /**
  * General Controller of Ezpz component
  *
@@ -17,7 +19,7 @@ defined('_JEXEC') or die('Restricted access');
  * @subpackage  com_ezpz
  * @since       0.0.7
  */
-class EzpzController extends JControllerLegacy
+class EzpzController extends BaseController
 {
     /**
      * The default view for the display method.
@@ -26,4 +28,9 @@ class EzpzController extends JControllerLegacy
      * @since 12.2
      */
     protected $default_view = 'ezpz';
+
+    public function display($cachable = false, $urlparams = array())
+    {
+        return parent::display($cachable, $urlparams);
+    }
 }
