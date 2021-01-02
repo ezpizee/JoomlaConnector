@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <extension type="component" version="3.0" method="upgrade">
-
     <name>COM_EZPZ</name>
     <!-- The following elements are optional and free of formatting constraints -->
     <creationDate>January 2018</creationDate>
@@ -69,31 +68,22 @@
             in this section are copied from /admin/ in the package -->
         <files folder="admin">
             <!-- Admin Main File Copy Section -->
-            <filename>index.html</filename>
-            <filename>config.xml</filename>
-            <filename>ezpz.php</filename>
-            <filename>controller.php</filename>
             <filename>access.xml</filename>
-            <!-- SQL files section -->
-            <folder>sql</folder>
-            <!-- tables files section -->
-            <folder>tables</folder>
-            <!-- models files section -->
-            <folder>models</folder>
-            <!-- views files section -->
-            <folder>views</folder>
-            <!-- controllers files section -->
-            <folder>controllers</folder>
-            <!-- helpers files section -->
+            <filename>composer.json</filename>
+            <filename>composer.phar</filename>
+            <filename>config.xml</filename>
+            <filename>controller.php</filename>
+            <filename>ezpz.php</filename>
+            <filename>index.html</filename>
+            <folder>asset</folder>
             <folder>helpers</folder>
-            <!-- layout files section -->
-            <folder>layouts</folder>
+            <folder>lib</folder>
+            <folder>sql</folder>
+            <folder>views</folder>
         </files>
         <languages folder="admin/language">
             <language tag="en-GB">en-GB/en-GB.com_ezpz.ini</language>
             <language tag="en-GB">en-GB/en-GB.com_ezpz.sys.ini</language>
-            <language tag="fr-FR">fr-FR/fr-FR.com_ezpz.ini</language>
-            <language tag="fr-FR">fr-FR/fr-FR.com_ezpz.sys.ini</language>
         </languages>
     </administration>
 
