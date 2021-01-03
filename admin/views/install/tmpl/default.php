@@ -54,10 +54,10 @@ $env = $this->getFormData(Client::KEY_ENV);
                     <div class="span12 col-12">
                         <select name="env" id="jform_env">
                             <option value=""><?php echo JText::_('COM_EZPZ_ENV_PLACEHOLDER');?></option>
-                            <option value="local"<?php echo $env==='local';?>>Local</option>
-                            <option value="dev"<?php echo $env==='dev';?>>Development</option>
-                            <option value="stage"<?php echo $env==='stage';?>>Staging</option>
-                            <option value="prod"<?php echo $env==='production';?>>Production</option>
+                            <option value="local"<?php echo $env==='local' ? ' selected' : '';?>>Local</option>
+                            <option value="dev"<?php echo $env==='dev' ? ' selected' : '';?>>Development</option>
+                            <option value="stage"<?php echo $env==='stage' ? ' selected' : '';?>>Staging</option>
+                            <option value="prod"<?php echo $env==='production'||empty($env) ? ' selected' : '';?>>Production</option>
                         </select>
                     </div>
                 </div>

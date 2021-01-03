@@ -22,7 +22,6 @@ use Joomla\CMS\MVC\View\HtmlView;
 class EzpzViewEzpz extends HtmlView
 {
     private $ezpzConfig;
-    private $mode = 'install';
     private $portalContent = '';
 
     /**
@@ -35,7 +34,6 @@ class EzpzViewEzpz extends HtmlView
         $this->ezpzConfig = EzpzAdminHelper::loadConfigData();
 
         if (!empty($this->ezpzConfig)) {
-            $this->mode = 'admin';
             $env = $this->ezpzConfig['env'];
             $url = Client::cdnEndpointPfx($env).Client::adminUri('joomla');
             if ($env === 'local') {
@@ -51,20 +49,10 @@ class EzpzViewEzpz extends HtmlView
     }
 
     private function formatOutput(): void {
-        $patterns = ["\n", "\r", "\t", "\s+"];
-        $replaces = ["", "", "", " "];
-        if (!empty($this->ezpzConfig)) {
-            foreach ($this->ezpzConfig as $key=>$val) {
-                $patterns[] = '{'.$key.'}';
-                $replaces[] = $val;
-            }
-        }
-        if ($this->mode === 'admin') {
-            $patterns[] = '{loginPageRedirectUrl}';
-            $replaces[] = '/administrator';
-        }
+        $patterns = ["\n", "\r", "\t", "\s+", '{loginPageRedirectUrl}'];
+        $replaces = ["", "", "", " ", '/administrator'];
         $dir = EzpzAdminHelper::assetFileRoot().DIRECTORY_SEPARATOR.'data'.DIRECTORY_SEPARATOR;
-        $override = str_replace($patterns, $replaces, file_get_contents($dir . 'ezpz_'.$this->mode.'_override.js'));
+        $override = str_replace($patterns, $replaces, file_get_contents($dir . 'ezpz_admin_override.js'));
         $this->portalContent = str_replace('<' . 'head>', '<' . 'head' . '><' . 'script>' . $override . '</' . 'script>', $this->portalContent);
     }
 }
