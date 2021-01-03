@@ -93,7 +93,6 @@ static/assets
 !static/assets/index.html
 
 composer.lock
-composer.phar
 
 # temporary block Phinx
 db/*
