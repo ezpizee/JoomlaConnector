@@ -4,6 +4,8 @@ namespace EzpizeeJoomla;
 
 use Ezpizee\MicroservicesClient\Token;
 use Ezpizee\MicroservicesClient\TokenHandlerInterface;
+use Exception;
+use Ezpizee\Utils\Logger;
 use Joomla\CMS\Factory;
 
 class TokenHandler implements TokenHandlerInterface
@@ -29,5 +31,17 @@ class TokenHandler implements TokenHandlerInterface
             }
         }
         return new Token([]);
+    }
+
+    public function setCookie(string $name, string $value, int $expire=0, string $path=''): void
+    {
+        try {
+            Factory::getApplication()->input->cookie->set(
+                $name, $value, $expire, $path
+            );
+        }
+        catch (Exception $e) {
+            Logger::error($e->getMessage());
+        }
     }
 }
