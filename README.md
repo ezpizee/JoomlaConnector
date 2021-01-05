@@ -33,15 +33,19 @@ INSTALLATION
 
  1) Download one of our releases https://github.com/ezpizee/JoomlaConnector/releases (the latest version recommended)
  
- 2) Login to your Joomla! Administrator section
+ 2) Unzip the download zip file
  
- 3) Go to **Extensions > Manage > Install**
-
- 4) Click on the **Upload Package File** tab
+ 3) Login to your Joomla! Administrator section
  
- 5) Upload downloaded zip file (i.e. *JoomlaConnector-0.0.1.zip*). The installation will proceed.
+ 4) Go to **Extensions > Manage > Install**
 
- 5) Wait until the installation is done, then click on the **Components > Ezpizee Portal**
+ 5) Click on the **Upload Package File** tab
+ 
+ 6) Upload /dist/ezpzlib.zip from the unzipped folder.
+ 
+ 7) Upload /dist/com_ezpz.zip from the unzipped folder.
+
+ 5) Wait until the installation is done, then click on the **Components > Ezpizee > Install**
 
 MAINTAINERS
 -----------
