@@ -1,0 +1,16 @@
+.admin.com_ezpz .header,
+.admin.com_ezpz .btn-subhead,
+.admin.com_ezpz .subhead-collapse {
+    display: none !important;
+}
+.icon-ezpz {
+    background-image: url(../images/icon.png);
+}
+.admin.com_ezpz .contained-m {
+    margin: 20px auto;
+    width: 500px;
+    padding: 10px;
+}
+.contained-m.border-ddd {
+    border: 1px solid #ddd;
+}

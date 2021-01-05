@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension type="component" version="3.0" method="upgrade">
+    <name>COM_EZPZ</name>
+    <!-- The following elements are optional and free of formatting constraints -->
+    <creationDate>January 2021</creationDate>
+    <author>Sothea Nim</author>
+    <authorEmail>sothea.nim@ezpizee.com</authorEmail>
+    <authorUrl>http://www.ezpizee.com</authorUrl>
+    <copyright>(C) 2020 - 2021 Ezpizee Co., Ltd. All rights reserved.</copyright>
+    <license>GNU General Public License version 2 or later; see LICENSE.txt</license>
+    <!--  The version string is recorded in the components table -->
+    <version>0.0.1</version>
+    <!-- The description is optional and defaults to the name -->
+    <description>COM_EZPZ_DESCRIPTION</description>
+
+    <!-- Runs on install/uninstall/update; New in 2.5 -->
+    <scriptfile>script.php</scriptfile>
+
+    <install> <!-- Runs on install -->
+        <sql>
+            <file driver="mysql" charset="utf8">sql/install.mysql.utf8.sql</file>
+        </sql>
+    </install>
+    <uninstall> <!-- Runs on uninstall -->
+        <sql>
+            <file driver="mysql" charset="utf8">sql/uninstall.mysql.utf8.sql</file>
+        </sql>
+    </uninstall>
+    <update> <!-- Runs on update; New since J2.5 -->
+        <schemas>
+            <schemapath type="mysql">sql/updates/mysql</schemapath>
+        </schemas>
+    </update>
+
+    <!-- Site Main File Copy Section -->
+    <!-- Note the folder attribute: This attribute describes the folder
+        to copy FROM in the package to install therefore files copied
+        in this section are copied from /site/ in the package -->
+    <files folder="site">
+        <filename>controller.php</filename>
+        <filename>ezpz.php</filename>
+        <filename>index.html</filename>
+        <filename>router.php</filename>
+        <folder>views</folder>
+    </files>
+
+    <languages folder="site/language">
+        <language tag="en-GB">en-GB/en-GB.com_ezpz.ini</language>
+    </languages>
+
+    <administration>
+        <menu link="#" img="/adminstrator/components/com_ezpz/asset/images/icon.png">COM_EZPZ_MENU</menu>
+        <submenu>
+            <menu link="option=com_ezpz&amp;view=ezpz" view="ezpz"
+                  img="/adminstrator/components/com_ezpz/asset/images/icon.png"
+                  alt="Ezpizee Portal / PORTAL">COM_EZPZ_PORTAL</menu>
+            <menu link="option=com_ezpz&amp;view=install" view="install"
+                  img="/adminstrator/components/com_ezpz/asset/images/icon.png"
+                  alt="Ezpizee Portal / Install">COM_EZPZ_INSTALL</menu>
+        </submenu>
+        <!-- Note the folder attribute: This attribute describes the folder
+            to copy FROM in the package to install therefore files copied
+            in this section are copied from /admin/ in the package -->
+        <files folder="admin">
+            <!-- Admin Main File Copy Section -->
+            <filename>access.xml</filename>
+            <filename>composer.json</filename>
+            <filename>composer.phar</filename>
+            <filename>config.xml</filename>
+            <filename>controller.php</filename>
+            <filename>ezpz.php</filename>
+            <filename>index.html</filename>
+            <folder>asset</folder>
+            <folder>helpers</folder>
+            <folder>lib</folder>
+            <folder>sql</folder>
+            <folder>views</folder>
+        </files>
+        <languages folder="admin/language">
+            <language tag="en-GB">en-GB/en-GB.com_ezpz.ini</language>
+            <language tag="en-GB">en-GB/en-GB.com_ezpz.sys.ini</language>
+        </languages>
+    </administration>
+
+</extension>
