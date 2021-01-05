@@ -62,7 +62,7 @@ EzpzLibAutoloader::appendPackage([
     'Ezpizee\\ContextProcessor' => __DIR__.DIRECTORY_SEPARATOR.'contextprocessor'.DIRECTORY_SEPARATOR.'src',
     'Handlebars' => __DIR__.DIRECTORY_SEPARATOR.'handlebars'.DIRECTORY_SEPARATOR.'src',
     'Ezpizee\\MicroservicesClient' => __DIR__.DIRECTORY_SEPARATOR.'microservices-client'.DIRECTORY_SEPARATOR.'src',
-    'Ezpizee\\MicroservicesUtils' => __DIR__.DIRECTORY_SEPARATOR.'microservices-utils'.DIRECTORY_SEPARATOR.'src',
+    'Ezpizee\\Utils' => __DIR__.DIRECTORY_SEPARATOR.'microservices-utils'.DIRECTORY_SEPARATOR.'src',
     'Ezpizee\\HandlebarsHelpers' => __DIR__.DIRECTORY_SEPARATOR.'php-hbs-helperss'.DIRECTORY_SEPARATOR.'src',
     'Unirest' => __DIR__.DIRECTORY_SEPARATOR.'unirest-php'.DIRECTORY_SEPARATOR.'src'
 ], true);
