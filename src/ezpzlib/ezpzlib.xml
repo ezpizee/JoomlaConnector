@@ -13,12 +13,10 @@
     <description>This is the main library for Ezpizee CMS Connector</description>
     <files>
         <filename>autoload.php</filename>
-        <folder>connector-utils</folder>
-        <folder>contextprocessor</folder>
-        <folder>handlebars</folder>
-        <folder>microservices-client</folder>
-        <folder>microservices-utils</folder>
-        <folder>php-hbs-helpers</folder>
-        <folder>unirest-php</folder>
+        <filename>.gitignore</filename>
+        <filename>composer.json</filename>
+        <filename>composer.lock</filename>
+        <filename>README.md</filename>
+        <folder>vendor</folder>
     </files>
 </extension>
