@@ -16,6 +16,6 @@ class ContextProcessor extends BaseContextProcessor
   public function processContext(): void {
       $tokenKey = $this->microserviceClient->getConfig(Client::KEY_ACCESS_TOKEN);
       $token = $this->microserviceClient->getToken($tokenKey);
-      $this->setContextData(['expire_in', $token->getExpireIn()]);
+      $this->setContextData(['expire_in' => $token->getExpireIn()]);
   }
 }
