@@ -1,0 +1,31 @@
+{
+    "name": "ezpizee/joomla-extension",
+    "description": "Ezpizee Joomla Connector",
+    "type": "library",
+    "keywords": [
+        "Joomla",
+        "Ezpizee",
+        "E-commerce"
+    ],
+    "homepage": "https://github.com/ezpizee/JoomlaConnector",
+    "license": "GPL-2.0-or-later",
+    "authors": [
+        {
+            "name": "Sothea Nim",
+            "homepage": "https://github.com/nimsothea",
+            "role": "Maintainer"
+        },
+        {
+            "name": "Sokhon Pang",
+            "homepage": "https://github.com/pangkhon",
+            "role": "Maintainer"
+        }
+    ],
+    "support": {
+        "issues": "https://github.com/ezpizee/JoomlaConnector/issues",
+        "source": "https://github.com/ezpizee/JoomlaConnector"
+    },
+    "require": {
+        "ezpizee/php-libs": "dev-master"
+    }
+}
