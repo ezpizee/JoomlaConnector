@@ -28,29 +28,25 @@ class EzpzLibAutoloader
     {
         spl_autoload_register(function ($class) {
             $parts = explode(self::$delimiter, trim($class, self::$delimiter));
-            $passed = false;
-            if (in_array($class, self::$objects)) {
-                $passed = true;
+            $file = "";
+            $part = "";
+            if (isset($parts[2]) && isset(self::$packages[$parts[0].self::$delimiter.$parts[1].self::$delimiter.$parts[2]])) {
+                $part = $parts[0].self::$delimiter.$parts[1].self::$delimiter.$parts[2];
+                $file = self::$packages[$part] . DS . str_replace(self::$delimiter, DS, $class) . '.php';
             }
-            if (!$passed) {
-                $file = "";
-                if (isset(self::$packages[$parts[0]])) {
-                    $part = $parts[0];
-                    $file = self::$packages[$part] . DS . str_replace(self::$delimiter, DS, $class) . '.php';
-                }
-                else if (isset($parts[1]) && isset(self::$packages[$parts[0].self::$delimiter.$parts[1]])) {
-                    $part = $parts[0].self::$delimiter.$parts[1];
-                    $file = self::$packages[$part] . DS . str_replace(self::$delimiter, DS, $class) . '.php';
-                }
-                else if (isset($parts[2]) && isset(self::$packages[$parts[0].self::$delimiter.$parts[1].self::$delimiter.$parts[2]])) {
-                    $part = $parts[0].self::$delimiter.$parts[1].self::$delimiter.$parts[2];
-                    $file = self::$packages[$part] . DS . str_replace(self::$delimiter, DS, $class) . '.php';
-                }
-                if (!empty($file) && file_exists($file)) {
-                    self::$objects[] = $class;
-                    include $file;
-                    $passed = true;
-                }
+            else if (isset($parts[1]) && isset(self::$packages[$parts[0].self::$delimiter.$parts[1]])) {
+                $part = $parts[0].self::$delimiter.$parts[1];
+                $file = self::$packages[$part] . DS . str_replace(self::$delimiter, DS, $class) . '.php';
+            }
+            else if (isset(self::$packages[$parts[0]])) {
+                $part = $parts[0];
+                $file = self::$packages[$part] . DS . str_replace(self::$delimiter, DS, $class) . '.php';
+            }
+            $passed = isset(self::$objects[$part]);
+            if ($passed === false && file_exists($file)) {
+                self::$objects[] = $class;
+                include $file;
+                $passed = true;
             }
             return $passed;
         });
