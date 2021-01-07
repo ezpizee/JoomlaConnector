@@ -15,24 +15,24 @@ use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\MVC\Controller\BaseController;
 
-if (!defined('DS')) {
-    define('DS', DIRECTORY_SEPARATOR);
+if (!defined('EZPIZEE_DS')) {
+    define('EZPIZEE_DS', DIRECTORY_SEPARATOR);
 }
 
-if (!file_exists(JPATH_LIBRARIES.DS.'ezpzlib'.DS.'autoload.php')) {
-    include __DIR__.DS.'asset'.DS.'html'.DS.'composer-install-instructions.php';
+if (!file_exists(JPATH_LIBRARIES.EZPIZEE_DS.'ezpzlib'.EZPIZEE_DS.'autoload.php')) {
+    include __DIR__.EZPIZEE_DS.'asset'.EZPIZEE_DS.'html'.EZPIZEE_DS.'composer-install-instructions.php';
 }
 else {
     if (!Factory::getUser()->authorise('core.manage', 'com_ezpz')) {
         throw new AccessExceptionNotAllowed(Text::_('JERROR_ALERTNOAUTHOR'), 403);
     }
 
-    include_once JPATH_LIBRARIES.DS.'ezpzlib'.DS.'autoload.php';
-    include_once __DIR__.DS.'helpers'.DS.'Constants.php';
-    include_once __DIR__.DS.'helpers'.DS.'EzpzAdminHelper.php';
+    include_once JPATH_LIBRARIES.EZPIZEE_DS.'ezpzlib'.EZPIZEE_DS.'autoload.php';
+    include_once __DIR__.EZPIZEE_DS.'helpers'.EZPIZEE_DS.'Constants.php';
+    include_once __DIR__.EZPIZEE_DS.'helpers'.EZPIZEE_DS.'EzpzAdminHelper.php';
 
     \Ezpizee\ContextProcessor\CustomLoader::appendPackage([
-        'EzpizeeJoomla' => __DIR__.DS.'lib'.DS.'src'
+        'EzpizeeJoomla' => __DIR__.EZPIZEE_DS.'lib'.EZPIZEE_DS.'src'
     ]);
     \Ezpizee\ContextProcessor\CustomLoader::exec();
 

@@ -18,6 +18,7 @@ use Ezpizee\Utils\Request;
 use Ezpizee\Utils\ResponseCodes;
 use Ezpizee\Utils\StringUtil;
 use EzpizeeJoomla\ContextProcessors\User\Profile\ContextProcessor;
+use EzpizeeJoomla\EzpizeeSanitizer;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Version;
 use Joomla\CMS\MVC\View\HtmlView;
@@ -94,6 +95,7 @@ class EzpzViewApi extends HtmlView
             $this->client->setPlatformVersion(Version::MAJOR_VERSION.'.'.Version::MINOR_VERSION.'.'.Version::PATCH_VERSION);
             $this->addHeaderRequest('user_id', Factory::getUser()->id);
             $this->uri = $this->request->getRequestParam('endpoint');
+            EzpizeeSanitizer::sanitize($this->uri, true);
             if ($this->uri && $this->uri[0] !== '/') {
                 $this->uri = str_replace('//', '/', '/'.$this->uri);
             }
@@ -148,7 +150,7 @@ class EzpzViewApi extends HtmlView
             if (isset($this->contentType) && $this->contentType === 'application/json') {
                 $response = $this->client->post($this->uri, $this->body);
             }
-            else if (isset($this->contentType) && strpos($this->contentType, 'multipart/form-data') !== false) {
+            else if (isset($this->contentType) && strpos($this->contentType, 'multipart/form-data;') !== false) {
                 if ($this->hasFileUploaded()) {
                     $response = $this->submitFormDataWithFile();
                 }

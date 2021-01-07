@@ -11,6 +11,9 @@
 defined('_JEXEC') or die('Restricted access');
 
 use Ezpizee\ConnectorUtils\Client;
+use Ezpizee\Utils\Logger;
+use Ezpizee\Utils\ResponseCodes;
+use EzpizeeJoomla\EzpizeeSanitizer;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\MVC\View\HtmlView;
@@ -48,6 +51,7 @@ class EzpzViewInstall extends HtmlView
             foreach (Constants::API_CONFIG_KEYS as $key) {
                 if ($input->get($key)) {
                     $this->formData[$key] = $input->getString($key);
+                    EzpizeeSanitizer::sanitize($this->formData[$key], true);
                     $this->values[] = '('.
                         $dbo->quote(md5($key)).','.
                         $dbo->quote($key).','.
@@ -80,28 +84,34 @@ class EzpzViewInstall extends HtmlView
 
     private function install(): void {
 
-        $app = Factory::getApplication();
-        $tokenHandler = 'EzpizeeJoomla\TokenHandler';
-        $response = Client::install(Client::DEFAULT_ACCESS_TOKEN_KEY, $this->formData, $tokenHandler);
+        try {
+            $app = Factory::getApplication();
+            $tokenHandler = 'EzpizeeJoomla\TokenHandler';
+            $response = Client::install(Client::DEFAULT_ACCESS_TOKEN_KEY, $this->formData, $tokenHandler);
 
-        if (!empty($response)) {
-            if (isset($response['code']) && (int)$response['code'] !== 200) {
-                if ($response['message']==='ITEM_ALREADY_EXISTS') {
-                    $app->enqueueMessage(Text::_('COM_EZPZ_INSTALL_ERROR_ALREADY_EXISTS'), 'error');
+            if (!empty($response)) {
+                if (isset($response['code']) && (int)$response['code'] !== 200) {
+                    if ($response['message']==='ITEM_ALREADY_EXISTS') {
+                        $app->enqueueMessage(Text::_('COM_EZPZ_INSTALL_ERROR_ALREADY_EXISTS'), 'error');
+                    }
+                    else {
+                        $app->enqueueMessage($response['message'], 'error');
+                    }
                 }
                 else {
-                    $app->enqueueMessage($response['message'], 'error');
+                    $sql = 'INSERT'.' INTO '.Constants::DB_TB_EZPZ.'(config_key_md5,config_key,config_value)'.
+                        ' VALUES'.implode(',', $this->values);
+                    Factory::getDbo()->setQuery($sql)->execute();
+                    $app->redirect('/administrator/index.php?option=com_ezpz&view=ezpz');
                 }
             }
             else {
-                $sql = 'INSERT'.' INTO '.Constants::DB_TB_EZPZ.'(config_key_md5,config_key,config_value)'.
-                    ' VALUES'.implode(',', $this->values);
-                Factory::getDbo()->setQuery($sql)->execute();
-                $app->redirect('/administrator/index.php?option=com_ezpz&view=ezpz');
+                $app->enqueueMessage(Text::_('COM_EZPZ_INSTALL_ERROR_FAILED_TO_INSTALL'));
             }
         }
-        else {
-            $app->enqueueMessage(Text::_('COM_EZPZ_INSTALL_ERROR_FAILED_TO_INSTALL'));
+        catch (Exception $e) {
+            Logger::error($e->getMessage());
+            throw new RuntimeException($e->getMessage(), ResponseCodes::CODE_ERROR_INTERNAL_SERVER);
         }
     }
 
