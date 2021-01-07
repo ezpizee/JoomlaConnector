@@ -85,7 +85,7 @@ cache
 id_rsa
 id_rsa.pub
 
-vendor/
+/vendor
 static/assets
 !static/assets/logs/index.html
 !static/assets/.htaccess
