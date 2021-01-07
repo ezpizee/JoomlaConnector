@@ -64,8 +64,6 @@
         <files folder="admin">
             <!-- Admin Main File Copy Section -->
             <filename>access.xml</filename>
-            <filename>composer.json</filename>
-            <filename>composer.phar</filename>
             <filename>config.xml</filename>
             <filename>controller.php</filename>
             <filename>ezpz.php</filename>
