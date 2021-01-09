@@ -20,7 +20,7 @@ if (!defined('EZPIZEE_DS')) {
 }
 
 if (!file_exists(JPATH_LIBRARIES.EZPIZEE_DS.'ezpzlib'.EZPIZEE_DS.'autoload.php')) {
-    include __DIR__.EZPIZEE_DS.'asset'.EZPIZEE_DS.'html'.EZPIZEE_DS.'composer-install-instructions.php';
+    include __DIR__.EZPIZEE_DS.'asset'.EZPIZEE_DS.'html'.EZPIZEE_DS.'install-instructions.php';
 }
 else {
     if (!Factory::getUser()->authorise('core.manage', 'com_ezpz')) {
