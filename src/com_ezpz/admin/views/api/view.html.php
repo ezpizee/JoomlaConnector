@@ -147,10 +147,10 @@ class EzpzViewApi extends HtmlView
             }
         }
         else if ($this->method === 'POST') {
-            if (isset($this->contentType) && $this->contentType === 'application/json') {
+            if ($this->contentType === 'application/json' || strpos($this->contentType, 'application/json') !== false) {
                 $response = $this->client->post($this->uri, $this->body);
             }
-            else if (isset($this->contentType) && strpos($this->contentType, 'multipart/form-data;') !== false) {
+            else if ($this->contentType === 'multipart/form-data' || strpos($this->contentType, 'multipart/form-data') !== false) {
                 if ($this->hasFileUploaded()) {
                     $response = $this->submitFormDataWithFile();
                 }
@@ -164,7 +164,7 @@ class EzpzViewApi extends HtmlView
             }
         }
         else if ($this->method === 'PUT') {
-            if (isset($this->contentType) && $this->contentType === 'application/json') {
+            if ($this->contentType === 'application/json' || strpos($this->contentType, 'application/json') !== false) {
                 $response = $this->client->put($this->uri, $this->body);
             }
             else {
