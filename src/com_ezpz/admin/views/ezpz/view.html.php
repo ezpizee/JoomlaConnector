@@ -11,6 +11,7 @@
 defined('_JEXEC') or die('Restricted access');
 
 use Ezpizee\ConnectorUtils\Client;
+use Ezpizee\Utils\StringUtil;
 use Joomla\CMS\Factory;
 use Joomla\CMS\MVC\View\HtmlView;
 
@@ -36,8 +37,13 @@ class EzpzViewEzpz extends HtmlView
         if (!empty($this->ezpzConfig)) {
             $env = $this->ezpzConfig['env'];
             $url = Client::cdnEndpointPfx($env).Client::adminUri('joomla');
-            if ($env === 'local') {
-                Client::setIgnorePeerValidation(true);
+            if (!StringUtil::isHttps($url)) {
+                if ($_SERVER['HTTPS']) {
+                    $url = str_replace('http://', 'https://', $url);
+                }
+                else if ($env === 'local') {
+                    Client::setIgnorePeerValidation(true);
+                }
             }
             $this->portalContent = Client::getContentAsString($url);
             $this->formatOutput();
