@@ -108,7 +108,7 @@ class EzpzViewApi extends HtmlView
     protected function restApiClient(): Response
     {
         if (!empty($this->uri)) {
-            if (StringUtil::startsWith($this->uri, "/api/v1/joomla/")) {
+            if (StringUtil::startsWith($this->uri, "/api/joomla/")) {
                 return $this->requestToCMS();
             }
             return $this->requestToMicroServices();

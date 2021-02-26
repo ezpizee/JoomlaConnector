@@ -14,11 +14,11 @@ class ApiClient
      */
     private $microserviceClient;
     private $endpoints = [
-        '/api/v1/joomla/refresh/token' => 'EzpizeeJoomla\ContextProcessors\RefreshToken',
-        '/api/v1/joomla/expire-in' => 'EzpizeeJoomla\ContextProcessors\ExpireIn',
-        '/api/v1/joomla/authenticated-user' => 'EzpizeeJoomla\ContextProcessors\AuthenticatedUser',
-        '/api/v1/joomla/crsf-token' => 'EzpizeeJoomla\ContextProcessors\CRSFToken',
-        '/api/v1/joomla/user/profile' => 'EzpizeeJoomla\ContextProcessors\User\Profile'
+        '/api/joomla/refresh/token' => 'EzpizeeJoomla\ContextProcessors\RefreshToken',
+        '/api/joomla/expire-in' => 'EzpizeeJoomla\ContextProcessors\ExpireIn',
+        '/api/joomla/authenticated-user' => 'EzpizeeJoomla\ContextProcessors\AuthenticatedUser',
+        '/api/joomla/crsf-token' => 'EzpizeeJoomla\ContextProcessors\CRSFToken',
+        '/api/joomla/user/profile' => 'EzpizeeJoomla\ContextProcessors\User\Profile'
     ];
 
     public function __construct(Client $client)
