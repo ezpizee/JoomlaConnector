@@ -99,9 +99,23 @@ class EzpzViewInstall extends HtmlView
                     }
                 }
                 else {
-                    $sql = 'INSERT'.' INTO '.Constants::DB_TB_EZPZ.'(config_key_md5,config_key,config_value)'.
-                        ' VALUES'.implode(',', $this->values);
-                    Factory::getDbo()->setQuery($sql)->execute();
+                    $dbo = Factory::getDbo();
+                    foreach (Constants::API_CONFIG_KEYS as $key) {
+                        $cond = 'config_key_md5='.$dbo->quote(md5($key));
+                        $sql = 'SELECT config_key'.' FROM '.Constants::DB_TB_EZPZ.' WHERE '.$cond;
+                        $row = $dbo->setQuery($sql)->loadAssoc();
+                        if (empty($row)) {
+                            $sql = 'INSERT'.' INTO '.Constants::DB_TB_EZPZ.'(config_key_md5,config_key,config_value)
+                            VALUES('.$dbo->quote(md5($key)).','.$dbo->quote($key).','.$dbo->quote($this->formData[$key]).')';
+                        }
+                        else {
+                            $sql = 'UPDATE '.Constants::DB_TB_EZPZ.' 
+                            SET config_value='.$dbo->quote($this->formData[$key]).'
+                            WHERE '.$cond;
+                        }
+                        $dbo->setQuery($sql)->execute();
+                    }
+
                     $app->redirect('/administrator/index.php?option=com_ezpz&view=ezpz');
                 }
             }
