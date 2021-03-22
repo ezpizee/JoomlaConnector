@@ -112,6 +112,14 @@ class EzpzViewApi extends HtmlView
             if (StringUtil::startsWith($this->uri, "/api/joomla/")) {
                 return $this->requestToCMS();
             }
+            
+            if(StringUtil::startsWith($this->uri, "/api/system/services/allowedhost/")){
+                $clientId =$this->ezpzConfig->get(Client::KEY_CLIENT_ID);
+                $clientSecret =$this->ezpzConfig->get(Client::KEY_CLIENT_SECRET);
+                $auth = base64_encode($clientId . ":" . $clientSecret);
+                $this->client->addHeader('x-authorization', "Basic ". $auth);  
+            }
+
             return $this->requestToMicroServices();
         }
         else {
