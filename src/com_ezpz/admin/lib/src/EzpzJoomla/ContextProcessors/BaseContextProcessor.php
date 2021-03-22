@@ -1,6 +1,6 @@
 <?php
 
-namespace EzpizeeJoomla\ContextProcessors;
+namespace EzpzJoomla\ContextProcessors;
 
 use Ezpizee\ContextProcessor\Base;
 use Ezpizee\MicroservicesClient\Client;

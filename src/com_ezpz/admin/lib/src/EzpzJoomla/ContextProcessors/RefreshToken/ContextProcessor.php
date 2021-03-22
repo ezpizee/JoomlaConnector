@@ -1,9 +1,9 @@
 <?php
 
-namespace EzpizeeJoomla\ContextProcessors\RefreshToken;
+namespace EzpzJoomla\ContextProcessors\RefreshToken;
 
 use Ezpizee\MicroservicesClient\Client;
-use EzpizeeJoomla\ContextProcessors\BaseContextProcessor;
+use EzpzJoomla\ContextProcessors\BaseContextProcessor;
 
 class ContextProcessor extends BaseContextProcessor
 {

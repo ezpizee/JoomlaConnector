@@ -17,12 +17,13 @@ use Ezpizee\Utils\ListModel;
 use Ezpizee\Utils\Request;
 use Ezpizee\Utils\ResponseCodes;
 use Ezpizee\Utils\StringUtil;
-use EzpizeeJoomla\ContextProcessors\User\Profile\ContextProcessor;
-use EzpizeeJoomla\EzpizeeSanitizer;
+use EzpzJoomla\ContextProcessors\User\Profile\ContextProcessor;
+use EzpzJoomla\EzpizeeSanitizer;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Version;
 use Joomla\CMS\MVC\View\HtmlView;
 use Unirest\Request\Body;
+use EzpzJoomla\ApiClient;
 
 /**
  * Api View
@@ -89,8 +90,8 @@ class EzpzViewApi extends HtmlView
             if ($env === 'local') {
                 Client::setIgnorePeerValidation(true);
             }
-            $tokenHandler = 'EzpizeeJoomla\TokenHandler';
-            $this->client = new Client(Client::apiSchema($env), Client::apiHost($env), $microserviceConfig, $tokenHandler);
+            $tokenHandler = 'Ezpizee\\SupportedCMS\\Joomla\\TokenHandler';
+            $this->client = new Client($this->ezpzConfig->get(Constants::KEY_SCHEMA), Client::apiHost($env), $microserviceConfig, $tokenHandler);
             $this->client->setPlatform('joomla');
             $this->client->setPlatformVersion(Version::MAJOR_VERSION.'.'.Version::MINOR_VERSION.'.'.Version::PATCH_VERSION);
             $this->addHeaderRequest('user_id', Factory::getUser()->id);
@@ -122,7 +123,7 @@ class EzpzViewApi extends HtmlView
 
     private function requestToCMS(): Response
     {
-        $api = new \EzpizeeJoomla\ApiClient($this->client);
+        $api = new ApiClient($this->client);
         return new Response($api->load($this->uri));
     }
 
@@ -147,10 +148,12 @@ class EzpzViewApi extends HtmlView
             }
         }
         else if ($this->method === 'POST') {
-            if ($this->contentType === 'application/json' || strpos($this->contentType, 'application/json') !== false) {
+            if ($this->contentType === 'application/json' ||
+                strpos($this->contentType, 'application/json') !== false) {
                 $response = $this->client->post($this->uri, $this->body);
             }
-            else if ($this->contentType === 'multipart/form-data' || strpos($this->contentType, 'multipart/form-data') !== false) {
+            else if ($this->contentType === 'multipart/form-data' ||
+                strpos($this->contentType, 'multipart/form-data') !== false) {
                 if ($this->hasFileUploaded()) {
                     $response = $this->submitFormDataWithFile();
                 }
@@ -191,8 +194,7 @@ class EzpzViewApi extends HtmlView
 
     private function submitFormData(): Response
     {
-        $response = $this->client->postFormData($this->uri, $this->body);
-        return $response;
+        return $this->client->postFormData($this->uri, $this->body);
     }
 
     private function hasFileUploaded(): bool

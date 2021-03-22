@@ -1,9 +1,9 @@
 <?php
 
-namespace EzpizeeJoomla\ContextProcessors\ExpireIn;
+namespace EzpzJoomla\ContextProcessors\ExpireIn;
 
 use Ezpizee\MicroservicesClient\Client;
-use EzpizeeJoomla\ContextProcessors\BaseContextProcessor;
+use EzpzJoomla\ContextProcessors\BaseContextProcessor;
 
 class ContextProcessor extends BaseContextProcessor
 {

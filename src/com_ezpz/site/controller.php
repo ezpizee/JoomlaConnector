@@ -8,11 +8,12 @@
  */
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
+
+use Joomla\CMS\MVC\Controller\BaseController;
+
 /**
  * Ezpizee Component Controller
  *
  * @since  0.0.1
  */
-class EzpzController extends JControllerLegacy
-{
-}
+class EzpzController extends BaseController {}

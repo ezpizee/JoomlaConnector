@@ -1,8 +1,8 @@
 <?php
 
-namespace EzpizeeJoomla\ContextProcessors\AuthenticatedUser;
+namespace EzpzJoomla\ContextProcessors\AuthenticatedUser;
 
-use EzpizeeJoomla\ContextProcessors\BaseContextProcessor;
+use EzpzJoomla\ContextProcessors\BaseContextProcessor;
 
 class ContextProcessor extends BaseContextProcessor
 {

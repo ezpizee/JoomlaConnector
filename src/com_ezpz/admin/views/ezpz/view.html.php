@@ -35,8 +35,8 @@ class EzpzViewEzpz extends HtmlView
         $this->ezpzConfig = EzpzAdminHelper::loadConfigData();
 
         if (!empty($this->ezpzConfig)) {
-            $env = $this->ezpzConfig['env'];
-            $url = Client::cdnEndpointPfx($env).Client::adminUri('joomla');
+            $env = $this->ezpzConfig[Client::KEY_ENV];
+            $url = $this->ezpzConfig[Constants::KEY_SCHEMA].Client::cdnHost($env).Client::adminUri('joomla');
             if (!StringUtil::isHttps($url)) {
                 if ($_SERVER['HTTPS']) {
                     $url = str_replace('http://', 'https://', $url);

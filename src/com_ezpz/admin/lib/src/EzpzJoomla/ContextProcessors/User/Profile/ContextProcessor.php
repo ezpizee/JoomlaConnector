@@ -1,8 +1,8 @@
 <?php
 
-namespace EzpizeeJoomla\ContextProcessors\User\Profile;
+namespace EzpzJoomla\ContextProcessors\User\Profile;
 
-use EzpizeeJoomla\ContextProcessors\BaseContextProcessor;
+use EzpzJoomla\ContextProcessors\BaseContextProcessor;
 use Joomla\CMS\Factory;
 
 class ContextProcessor extends BaseContextProcessor

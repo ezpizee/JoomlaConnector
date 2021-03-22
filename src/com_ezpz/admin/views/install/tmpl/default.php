@@ -11,7 +11,11 @@
 defined('_JEXEC') or die('Restricted Access');
 
 use Ezpizee\ConnectorUtils\Client;
+use Joomla\CMS\Language\Text as JText;
+use Joomla\CMS\Router\Route as JRoute;
+
 $env = $this->getFormData(Client::KEY_ENV);
+$schema = $this->getFormData(Constants::KEY_SCHEMA);
 ?>
 <div class="contained-m border-ddd">
     <div class="row-fluid">
@@ -50,6 +54,18 @@ $env = $this->getFormData(Client::KEY_ENV);
                     </div>
                 </div>
                 <div class="form-vertical">
+                    <label for="jform_schema"><?php echo JText::_('COM_EZPZ_SCHEMA');?></label>
+                    <div class="row-fluid">
+                        <div class="span12 col-12">
+                            <select name="schema" id="jform_schema">
+                                <option value=""><?php echo JText::_('COM_EZPZ_SCHEMA_PLACEHOLDER');?></option>
+                                <option value="https://"<?php echo $schema==='https://' ? ' selected' : '';?>>https://</option>
+                                <option value="http://"<?php echo $schema==='http://' ? ' selected' : '';?>>http://</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-vertical">
                     <label for="jform_env"><?php echo JText::_('COM_EZPZ_ENV');?></label>
                     <div class="row-fluid">
                         <div class="span12 col-12">
@@ -58,7 +74,7 @@ $env = $this->getFormData(Client::KEY_ENV);
                                 <option value="local"<?php echo $env==='local' ? ' selected' : '';?>>Local</option>
                                 <option value="dev"<?php echo $env==='dev' ? ' selected' : '';?>>Development</option>
                                 <option value="stage"<?php echo $env==='stage' ? ' selected' : '';?>>Staging</option>
-                                <option value="prod"<?php echo $env==='production'||empty($env) ? ' selected' : '';?>>Production</option>
+                                <option value="prod"<?php echo $env==='prod'||empty($env) ? ' selected' : '';?>>Production</option>
                             </select>
                         </div>
                     </div>

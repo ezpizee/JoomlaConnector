@@ -13,7 +13,7 @@ defined('_JEXEC') or die('Restricted access');
 use Ezpizee\ConnectorUtils\Client;
 use Ezpizee\Utils\Logger;
 use Ezpizee\Utils\ResponseCodes;
-use EzpizeeJoomla\EzpizeeSanitizer;
+use EzpzJoomla\EzpizeeSanitizer;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\MVC\View\HtmlView;
@@ -86,36 +86,22 @@ class EzpzViewInstall extends HtmlView
 
         try {
             $app = Factory::getApplication();
-            $tokenHandler = 'EzpizeeJoomla\TokenHandler';
-            $response = Client::install(Client::DEFAULT_ACCESS_TOKEN_KEY, $this->formData, $tokenHandler);
+            $tokenHandler = 'Ezpizee\\SupportedCMS\\Joomla\\TokenHandler';
+            $response = Client::install(
+                Client::DEFAULT_ACCESS_TOKEN_KEY, $this->formData, $tokenHandler);
 
             if (!empty($response)) {
                 if (isset($response['code']) && (int)$response['code'] !== 200) {
                     if ($response['message']==='ITEM_ALREADY_EXISTS') {
                         $app->enqueueMessage(Text::_('COM_EZPZ_INSTALL_ERROR_ALREADY_EXISTS'), 'error');
+                        $this->saveConfigData();
                     }
                     else {
                         $app->enqueueMessage($response['message'], 'error');
                     }
                 }
                 else {
-                    $dbo = Factory::getDbo();
-                    foreach (Constants::API_CONFIG_KEYS as $key) {
-                        $cond = 'config_key_md5='.$dbo->quote(md5($key));
-                        $sql = 'SELECT config_key'.' FROM '.Constants::DB_TB_EZPZ.' WHERE '.$cond;
-                        $row = $dbo->setQuery($sql)->loadAssoc();
-                        if (empty($row)) {
-                            $sql = 'INSERT'.' INTO '.Constants::DB_TB_EZPZ.'(config_key_md5,config_key,config_value)
-                            VALUES('.$dbo->quote(md5($key)).','.$dbo->quote($key).','.$dbo->quote($this->formData[$key]).')';
-                        }
-                        else {
-                            $sql = 'UPDATE '.Constants::DB_TB_EZPZ.' 
-                            SET config_value='.$dbo->quote($this->formData[$key]).'
-                            WHERE '.$cond;
-                        }
-                        $dbo->setQuery($sql)->execute();
-                    }
-
+                    $this->saveConfigData();
                     $app->redirect('/administrator/index.php?option=com_ezpz&view=ezpz');
                 }
             }
@@ -129,11 +115,31 @@ class EzpzViewInstall extends HtmlView
         }
     }
 
+    private function saveConfigData() {
+        $dbo = Factory::getDbo();
+        foreach (Constants::API_CONFIG_KEYS as $key) {
+            $cond = 'config_key_md5='.$dbo->quote(md5($key));
+            $sql = 'SELECT config_key'.' FROM '.Constants::DB_TB_EZPZ.' WHERE '.$cond;
+            $row = $dbo->setQuery($sql)->loadAssoc();
+            if (empty($row)) {
+                $sql = 'INSERT'.' INTO '.Constants::DB_TB_EZPZ.'(config_key_md5,config_key,config_value)
+                VALUES('.$dbo->quote(md5($key)).','.$dbo->quote($key).','.$dbo->quote($this->formData[$key]).')';
+            }
+            else {
+                $sql = 'UPDATE '.Constants::DB_TB_EZPZ.'
+                SET config_value='.$dbo->quote($this->formData[$key]).'
+                WHERE '.$cond;
+            }
+            $dbo->setQuery($sql)->execute();
+        }
+    }
+
     private function loadData(): void {
         $keys = [
             md5(Client::KEY_CLIENT_ID),
             md5(Client::KEY_CLIENT_SECRET),
             md5(Client::KEY_APP_NAME),
+            md5(Constants::KEY_SCHEMA),
             md5(Client::KEY_ENV)
         ];
         $sql = 'SELECT *'.' FROM '.Constants::DB_TB_EZPZ.

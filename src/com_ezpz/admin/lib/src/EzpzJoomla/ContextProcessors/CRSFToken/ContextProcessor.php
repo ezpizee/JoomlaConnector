@@ -1,8 +1,8 @@
 <?php
 
-namespace EzpizeeJoomla\ContextProcessors\CRSFToken;
+namespace EzpzJoomla\ContextProcessors\CRSFToken;
 
-use EzpizeeJoomla\ContextProcessors\BaseContextProcessor;
+use EzpzJoomla\ContextProcessors\BaseContextProcessor;
 use Joomla\CMS\Session\Session;
 
 class ContextProcessor extends BaseContextProcessor

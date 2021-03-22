@@ -1,24 +1,24 @@
 <?php
 
-namespace EzpizeeJoomla;
+namespace EzpzJoomla;
 
 use Ezpizee\MicroservicesClient\Client;
 use Ezpizee\Utils\Request;
 use Ezpizee\Utils\RequestEndpointValidator;
-use EzpizeeJoomla\ContextProcessors\BaseContextProcessor;
+use EzpzJoomla\ContextProcessors\BaseContextProcessor;
 
 class ApiClient
 {
     /**
      * @var Client
      */
-    private $microserviceClient;
-    private $endpoints = [
-        '/api/joomla/refresh/token' => 'EzpizeeJoomla\ContextProcessors\RefreshToken',
-        '/api/joomla/expire-in' => 'EzpizeeJoomla\ContextProcessors\ExpireIn',
-        '/api/joomla/authenticated-user' => 'EzpizeeJoomla\ContextProcessors\AuthenticatedUser',
-        '/api/joomla/crsf-token' => 'EzpizeeJoomla\ContextProcessors\CRSFToken',
-        '/api/joomla/user/profile' => 'EzpizeeJoomla\ContextProcessors\User\Profile'
+    protected $microserviceClient;
+    protected $endpoints = [
+        '/api/joomla/refresh/token' => 'EzpzJoomla\ContextProcessors\RefreshToken',
+        '/api/joomla/expire-in' => 'EzpzJoomla\ContextProcessors\ExpireIn',
+        '/api/joomla/authenticated-user' => 'EzpzJoomla\ContextProcessors\AuthenticatedUser',
+        '/api/joomla/crsf-token' => 'EzpzJoomla\ContextProcessors\CRSFToken',
+        '/api/joomla/user/profile' => 'EzpzJoomla\ContextProcessors\User\Profile'
     ];
 
     public function __construct(Client $client)

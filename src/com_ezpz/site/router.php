@@ -2,28 +2,31 @@
 
 defined('_JEXEC') or die;
 
-class EzpzRouter implements JComponentRouterInterface
-{
+use Joomla\CMS\Component\Router\RouterInterface;
+use Joomla\CMS\Language\Multilanguage;
 
+class EzpzRouter implements RouterInterface
+{
     public function build(&$query)
     {
         $segments = array();
 
-        if (!JLanguageMultilang::isEnabled() || !isset($query['view']))
+        if (!Multilanguage::isEnabled() || !isset($query['view']))
         {
             return $segments;
         }
 
-        $lang = JFactory::getLanguage()->getTag();
-        $app  = JFactory::getApplication();
+        //$lang = JFactory::getLanguage()->getTag();
+        //$app  = JFactory::getApplication();
 
         // get the menu item that this call to build() relates to
         if (!isset($query['Itemid']))
         {
             return $segments;
         }
-        $sitemenu = $app->getMenu();
-        $thisMenuitem = $sitemenu->getItem($query['Itemid']);
+
+        //$sitemenu = $app->getMenu();
+        //if ($sitemenu instanceof AbstractMenu) {$thisMenuitem = $sitemenu->getItem($query['Itemid']);}
 
         if ($query['view'] == "ezpz" && isset($query['catid']) && isset($query['id']))
         {
@@ -52,7 +55,7 @@ class EzpzRouter implements JComponentRouterInterface
 
     private function getCategorySegments($catid)
     {
-        return null;
+        return isset($catid) ? '' : null;
     }
 
     public function parse(&$segments)
